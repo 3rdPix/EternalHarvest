@@ -1,0 +1,9 @@
+{
+    "front": {
+        "languages": {
+            "spanish": ["ft", "lang", "esp.json"],
+            "english": ["ft", "lang", "eng.json"]
+                     },
+        "styling_par": ["ft", "styling_parameters.json"]
+             }
+}
