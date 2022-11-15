@@ -1,9 +1,4 @@
 {
-    "window": {
-        "geometry": [100, 100, 1366, 768],
-        "language": "spanish"
-    },
-
     "widgets": {
         "resize_mob_factor": 1.2
     }
