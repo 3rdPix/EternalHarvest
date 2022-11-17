@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QLabel, QGroupBox, QFrame, QMdiArea, QMdiSubWindow,\
-    QLayout
+    QLayout, QVBoxLayout, QHBoxLayout, QGridLayout
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtCore import QEvent, QRect, QPoint, QMargins, Qt, QSize
 from math import ceil
@@ -40,30 +40,74 @@ class MobLabel(QLabel):
 
 class MobBox(QGroupBox):
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, pt: str, **kwargs) -> None:
         super().__init__(**kwargs)
+        self.setMouseTracking(True)
+        self.create_image(pt)
 
-    def set_base_size(self) -> None:
-        self.ex_width = self.width()
-        self.ex_height = self.height()
+    def create_image(self, pt: str) -> None:
+        self.mob = QLabel(parent=self)
+        image = QPixmap(pt)
+        self.mob.setPixmap(image)
+        self.mob.setScaledContents(True)
+        grid = QGridLayout()
+        grid.addWidget(self.mob, 1, 1)
+        self.setLayout(grid)
+        # self.set_sizes()
+
+    def set_sizes(self) -> None:
+        base_x: int = self.mob.width()
+        base_y: int = self.mob.height()
+        self.base_mob_size = QSize(base_x, base_y)
+        self.expa_mob_size = QSize(ceil(base_x * 1.1), ceil(base_y * 1.1))
 
     def enterEvent(self, event: QEvent) -> None:
-        center_point = self.geometry().center()
-        new_width = ceil(self.ex_width * 1.1)
-        new_height = ceil(self.ex_height * 1.1)
-        self.resize(new_width, new_height)
-        sillhouette = self.frameGeometry()
-        sillhouette.moveCenter(center_point)
-        self.move(sillhouette.topLeft())
+        self.mob.resize(self.expa_mob_size)
         return super().enterEvent(event)
 
     def leaveEvent(self, event: QEvent) -> None:
-        center_point = self.geometry().center()
-        self.resize(self.ex_width, self.ex_height)
-        sillhouette = self.frameGeometry()
-        sillhouette.moveCenter(center_point)
-        self.move(sillhouette.topLeft())
+        self.mob.resize(self.base_mob_size)
         return super().leaveEvent(event)
+
+
+class CellBox(QLabel):
+
+    def __init__(self, image_path: str, name: str, w: int, h: int,
+    cell_style: str, background_path: str, hover_path: str,
+    text_style: str, **kwargs) -> None:
+        super().__init__(**kwargs)
+        self.non_hover_back: QPixmap = QPixmap(background_path)
+        self.hover_back: QPixmap = QPixmap(hover_path)
+        self.setPixmap(self.non_hover_back)
+        self.setMinimumSize(w, h)
+        self.setStyleSheet(cell_style)
+        self.setScaledContents(True)
+        self.setFrameStyle(QFrame.StyledPanel | QFrame.Plain)
+        self.set_content(image_path, name, text_style)
+
+    def set_content(self, image_path: str, name: str, style: str) -> None:
+        mob_label: QLabel = QLabel(parent=self)
+        mob_image: QPixmap = QPixmap(image_path)
+        mob_label.setPixmap(mob_image)
+        mob_label.setScaledContents(True)
+
+        name_label: QLabel = QLabel(parent=self, text=name)
+        name_label.setWordWrap(True)
+        name_label.setStyleSheet(style)
+
+        self.setLayout(hpad_this(
+            mob_label,
+            name_label
+        ))
+
+    def enterEvent(self, event: QEvent) -> None:
+        self.setPixmap(self.hover_back)
+        return super().enterEvent(event)
+
+    def leaveEvent(self, event: QEvent) -> None:
+        self.setPixmap(self.non_hover_back)
+        return super().leaveEvent(event)
+
 
 class MobMdi(QMdiArea):
     def fixGeometry(self, window, viewGeo):
@@ -162,3 +206,23 @@ class FlowLayout(QLayout):
             x = next_x
             line_height = max(line_height, item.sizeHint().height())
         return y + line_height - rect.y()
+
+def hpad_this(*args) -> QVBoxLayout:
+        padded_boxes: list = list()
+        layout = QVBoxLayout()
+        for widget in args:
+            local_pad = QHBoxLayout()
+            local_pad.addStretch()
+            if type(widget) == type(args):
+                for each in widget: local_pad.addWidget(each)
+            elif type(widget) == type(QVBoxLayout) or\
+                type(widget) == type(QHBoxLayout):
+                local_pad.addLayout(widget)
+            else: local_pad.addWidget(widget)
+            local_pad.addStretch()
+            padded_boxes.append(local_pad)
+        for box in padded_boxes:
+            layout.addStretch()
+            layout.addLayout(box)
+        layout.addStretch()
+        return layout

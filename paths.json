@@ -5,6 +5,15 @@
             "english": ["ft", "lang", "eng.json"]
                      },
         "styling_par": ["ft", "styling_parameters.json"],
-        "preset_window": ["ft", "preset_window.json"]
+        "preset_window": ["ft", "preset_window.json"],
+        "arch": ["ft", "sprites", "arch"],
+        "css": {
+            "cell": ["ft", "css", "cell_box.css"],
+            "cell_text": ["ft", "css", "cell_text.css"]
+        },
+        "background_im": {
+            "cell": ["ft", "sprites", "ill", "bg_items_shop.png"],
+            "on_cell": ["ft", "sprites", "ill", "bg_items_shop_on.jpg"]
+        }
              }
 }
