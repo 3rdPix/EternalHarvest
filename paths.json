@@ -8,12 +8,31 @@
         "preset_window": ["ft", "preset_window.json"],
         "arch": ["ft", "sprites", "arch"],
         "css": {
-            "cell": ["ft", "css", "cell_box.css"],
-            "cell_text": ["ft", "css", "cell_text.css"]
+            "cell": ["ft", "css", "cell_box.txt"],
+            "cell_text": ["ft", "css", "cell_text.txt"]
         },
         "background_im": {
-            "cell": ["ft", "sprites", "ill", "bg_items_shop.png"],
-            "on_cell": ["ft", "sprites", "ill", "bg_items_shop_on.jpg"]
+            "cell": ["ft", "sprites", "backgrounds", "bg_items_shop.png"],
+            "on_cell": ["ft", "sprites", "backgrounds", "bg_items_shop_on.jpg"],
+            "cell_click": ["ft", "sprites", "backgrounds", "bg_square_red.jpg"],
+            "big_back": ["ft", "sprites", "backgrounds", "block_background.jpg"],
+            "t_dis_normal": ["ft", "sprites", "ill", "bg_tab_disabled_over.png"],
+            "t_dis_press": ["ft", "sprites", "ill", "bg_tab_disabled_pressed.png"],
+            "t_sel_normal": ["ft", "sprites", "ill", "bg_tab_selected_normal.png"],
+            "t_sel_over": ["ft", "sprites", "ill", "bg_tab_selected_over.png"],
+            "t_sel_pressed": ["ft", "sprites", "ill", "bg_tab_selected_pressed.png"]
+        },
+        "lang_im": {
+            "spanish": ["ft", "sprites", "lang", "spanish.png"],
+            "english": ["ft", "sprites", "lang", "english.png"],
+            "french": ["ft", "sprites", "lang", "french.png"]
+        },
+        "ill": {
+            "window_icon": ["ft", "sprites", "ill", "window_icon.png"],
+            "search_icon": ["ft", "sprites", "ill", "tx_prospecting.png"],
+            "progress_icon": ["ft", "sprites", "ill", "inventory.png"],
+            "box_back": ["ft", "sprites", "ill", "box_back.png"],
+            "setting_icon": ["ft", "sprites", "ill", "tx_processor.png"]
         }
              }
 }

@@ -1,6 +1,7 @@
 {
     "widgets": {
         "resize_mob_factor": 1.2,
-        "cell_dimensions": [100, 120]
+        "cell_dimensions": [140, 150],
+        "tabs_dimensions": [150, 50]
     }
 }

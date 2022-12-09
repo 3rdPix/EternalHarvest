@@ -1,3 +1,11 @@
 {
-    "window_title": "La Cosecha Eterna"
+    "window_title": "La Cosecha Eterna",
+    "arch_tab": "Archimonstruos",
+    "boss_tab": "Jefes de Mazmorra",
+    "search_box": "Búsqueda",
+    "search_placeholder": "Escribe el nombre del mob",
+    "progress_box": "Rastreador",
+    "general_pro": "Progreso general",
+    "config_box": "Configuraciones",
+    "lang_selec": "Idioma"
 }

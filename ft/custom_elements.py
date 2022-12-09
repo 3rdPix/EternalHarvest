@@ -1,9 +1,9 @@
 from PyQt5.QtWidgets import QLabel, QGroupBox, QFrame, QMdiArea, QMdiSubWindow,\
     QLayout, QVBoxLayout, QHBoxLayout, QGridLayout
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtCore import QEvent, QRect, QPoint, QMargins, Qt, QSize
+from PyQt5.QtGui import QPixmap, QMouseEvent
+from PyQt5.QtCore import QEvent, QRect, QPoint, QMargins, Qt, QSize, pyqtSignal
 from math import ceil
-
+from itertools import count
 
 class MobLabel(QLabel):
 
@@ -74,12 +74,13 @@ class CellBox(QLabel):
 
     def __init__(self, image_path: str, name: str, w: int, h: int,
     cell_style: str, background_path: str, hover_path: str,
-    text_style: str, **kwargs) -> None:
+    text_style: str, click_back_path: str, **kwargs) -> None:
         super().__init__(**kwargs)
         self.non_hover_back: QPixmap = QPixmap(background_path)
         self.hover_back: QPixmap = QPixmap(hover_path)
+        self.click_back: QPixmap = QPixmap(click_back_path)
         self.setPixmap(self.non_hover_back)
-        self.setMinimumSize(w, h)
+        self.setFixedSize(w, h)
         self.setStyleSheet(cell_style)
         self.setScaledContents(True)
         self.setFrameStyle(QFrame.StyledPanel | QFrame.Plain)
@@ -108,36 +109,13 @@ class CellBox(QLabel):
         self.setPixmap(self.non_hover_back)
         return super().leaveEvent(event)
 
+    def mousePressEvent(self, event: QMouseEvent) -> None:
+        if event.button() == Qt.LeftButton: self.setPixmap(self.click_back)
+        return super().mousePressEvent(event)
 
-class MobMdi(QMdiArea):
-    def fixGeometry(self, window, viewGeo):
-        winGeo = window.geometry()
-        if not viewGeo.contains(winGeo):
-            if winGeo.right() > viewGeo.right():
-                winGeo.moveRight(viewGeo.right())
-            if winGeo.x() < 0:
-                winGeo.moveLeft(0)
-            if winGeo != window.geometry():
-                window.setGeometry(winGeo)
-                return True
-        return False
-
-    def eventFilter(self, obj, event):
-        if (event.type() == event.Move and 
-            isinstance(obj, QMdiSubWindow) and
-            self.fixGeometry(obj, self.viewport().geometry())):
-                return True
-        return super().eventFilter(obj, event)
-
-    def resizeEvent(self, event):
-        super().resizeEvent(event)
-        viewGeo = self.viewport().geometry()
-        for win in self.subWindowList():
-            self.fixGeometry(win, viewGeo)
-
-    def order(self) -> None:
-        list = self.subWindowList()
-        print(list)
+    def mouseReleaseEvent(self, event: QMouseEvent) -> None:
+        self.setPixmap(self.hover_back)
+        return super().mouseReleaseEvent(event)
 
 
 # This class was taken from Qt Documentation
@@ -207,6 +185,7 @@ class FlowLayout(QLayout):
             line_height = max(line_height, item.sizeHint().height())
         return y + line_height - rect.y()
 
+
 def hpad_this(*args) -> QVBoxLayout:
         padded_boxes: list = list()
         layout = QVBoxLayout()
@@ -226,3 +205,115 @@ def hpad_this(*args) -> QVBoxLayout:
             layout.addLayout(box)
         layout.addStretch()
         return layout
+
+
+class TabLabel(QLabel):
+
+    tab_index = count(0, 1)
+
+    def get_active(self) -> bool: return self._active
+    def set_active(self, state: bool) -> None:
+        if state:
+            self.setPixmap(self.im_selected_normal)
+            self._active = state
+        else:
+            self.setPixmap(self.im_disabled_normal)
+            self._active = state
+    active = property(get_active, set_active)
+
+    def __init__(self, pt_disabled_normal: str, pt_disabled_pressed: str,
+    pt_selected_normal: str, pt_selected_over: str, pt_selected_pressed: str,
+    tab_w: int, tab_h: int, sg_tab_click: pyqtSignal, **kwargs) -> None:
+        super().__init__(**kwargs)
+        self._active: bool = False
+        self.sg_point: pyqtSignal = sg_tab_click
+        self.setFixedSize(tab_w, tab_h)
+        self.setScaledContents(True)
+        self.create_pixmaps(pt_disabled_normal, pt_disabled_pressed,
+        pt_selected_normal, pt_selected_over, pt_selected_pressed)
+        self.setPixmap(self.im_disabled_normal)
+        self._id = next(self.tab_index)
+        self.create_text()
+
+    def create_text(self) -> None:
+        self.tab_text: QLabel = QLabel()
+        hor_box: QHBoxLayout = QHBoxLayout()
+        hor_box.addStretch()
+        hor_box.addWidget(self.tab_text)
+        hor_box.addStretch()
+        self.setLayout(hor_box)
+
+    def setTabText(self, txt: str) -> None:
+        self.tab_text.setText(txt)
+        self.tab_text.repaint()
+
+    def create_pixmaps(self, disabled_normal: str, disabled_pressed: str,
+    selected_normal: str, selected_over: str, selected_pressed: str) -> None:
+        self.im_disabled_normal: QPixmap = QPixmap(disabled_normal)
+        self.im_disabled_pressed: QPixmap = QPixmap(disabled_pressed)
+        self.im_selected_normal: QPixmap = QPixmap(selected_normal)
+        self.im_selected_over: QPixmap = QPixmap(selected_over)
+        self.im_selected_pressed: QPixmap = QPixmap(selected_pressed)
+
+    def change_state(self) -> None:
+        self.active = not self.active
+
+    def enterEvent(self, event: QEvent) -> None:
+        if self.active: self.setPixmap(self.im_selected_over)
+        return super().enterEvent(event)
+
+    def leaveEvent(self, event: QEvent) -> None:
+        if self.active: self.setPixmap(self.im_selected_normal)
+        return super().leaveEvent(event)
+
+    def mousePressEvent(self, event: QMouseEvent) -> None:
+        if self.active: self.setPixmap(self.im_selected_pressed)
+        else: self.setPixmap(self.im_disabled_pressed)
+        return super().mousePressEvent(event)
+
+    def mouseReleaseEvent(self, event: QMouseEvent) -> None:
+        if self.active: self.setPixmap(self.im_selected_over)
+        else: self.sg_point.emit(self._id)
+        return super().mouseReleaseEvent(event)
+
+class HudBox(QLabel):
+
+    def __init__(self, pt_icon: str, pt_back: str, **kwargs) -> None:
+        super().__init__(**kwargs)
+        self.setPixmap(QPixmap(pt_back))
+        self.setScaledContents(True)
+        self.setFixedWidth(260)
+        self.init_gui(pt_icon)
+
+    def init_gui(self, pt_icon) -> None:
+        # Icon
+        icon_map: QPixmap = QPixmap(pt_icon)
+        icon: QLabel = QLabel()
+        icon.setPixmap(icon_map)
+        icon.setFixedSize(25, 25)
+        icon.setScaledContents(True)
+
+        # Text
+        self.title: QLabel = QLabel()
+
+        # Content
+        self.content_box: QFrame = QFrame()
+
+        # Layouts
+        
+        title_layout: QHBoxLayout = QHBoxLayout()
+        title_layout.addWidget(icon, 0)
+        title_layout.addWidget(self.title, 0)
+        title_layout.addStretch(1)
+
+        box_layout: QVBoxLayout = QVBoxLayout()
+        box_layout.addLayout(title_layout, 0)
+        box_layout.addWidget(self.content_box)
+        self.setLayout(box_layout)
+
+    def setContent(self, box: QLayout) -> None:
+        self.content_box.setLayout(box)
+
+    def setBoxTitle(self, title: str) -> None:
+        self.title.setText(title)
+        self.title.repaint()
