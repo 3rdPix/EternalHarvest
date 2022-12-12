@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QApplication
-from ft.window import MobDex
+from ft.main_window import WindowVisual
+from ft.sign_up_window import SignUpWindow
 import json
 
 class EternalHarvest(QApplication):
@@ -9,10 +10,11 @@ class EternalHarvest(QApplication):
 
         self.retrieve_paths()
 
-        self.window: MobDex = MobDex(self.paths)
+        self.window: WindowVisual = WindowVisual(self.paths)
+        self.log_in: SignUpWindow = SignUpWindow(self.paths)
 
         self.signal_connection()
-        self.window.show()
+        self.log_in.show()
 
     def retrieve_paths(self) -> None:
         with open('paths.json', 'r') as file:

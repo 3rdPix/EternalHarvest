@@ -7,5 +7,11 @@
     "progress_box": "Rastreador",
     "general_pro": "Progreso general",
     "config_box": "Configuraciones",
-    "lang_selec": "Idioma"
+    "lang_selec": "Idioma",
+    "log_in": {
+        "advice": "Es altamente recomendado utilizar como nombre de usuario, el nombre de tu personaje dentro del juego",
+        "user": "Usuario",
+        "pass": "Contraseña",
+        "enter": "Ingresar"
+    }
 }

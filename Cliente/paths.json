@@ -34,5 +34,9 @@
             "box_back": ["ft", "sprites", "ill", "box_back.png"],
             "setting_icon": ["ft", "sprites", "ill", "tx_processor.png"]
         }
-             }
+             },
+    
+    "back": {
+        "user_info": ["bk", "user_info.json"]
+    }
 }

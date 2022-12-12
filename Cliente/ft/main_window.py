@@ -11,7 +11,7 @@ from os.path import join
 import requests
 
 
-class MobDex(QWidget):
+class WindowVisual(QWidget):
 
     sg_tab_clicked = pyqtSignal(int)
 
@@ -97,7 +97,7 @@ class MobDex(QWidget):
         tab_bar_container.addStretch(1)
 
         # Tabs content
-        self.arch_scroll: QScrollArea = self.create_scroll_area()
+        self.arch_scroll: QScrollArea = QScrollArea()
         self.boss_scroll: QScrollArea = QScrollArea()
         self.tab_content_container: QStackedLayout = QStackedLayout()
         self.tab_content_container.addWidget(self.arch_scroll)
@@ -180,8 +180,6 @@ class MobDex(QWidget):
         win_container.addLayout(full_container, 1)
         win_container.addLayout(right_panel, 0)
         self.setLayout(win_container)
-
-        pass
 
     def stylize_gui(self) -> None:
         self.setWindowIcon(QIcon(join(
