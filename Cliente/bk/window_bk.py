@@ -2,7 +2,7 @@ from PyQt5.QtCore import QObject
 from os.path import join, exists
 from socket import socket, AF_INET, SOCK_STREAM
 from bk.window_signals import WindowSignals
-from bk.elements import Router
+from bk.router import Router
 from bk.requests import Requests
 import json
 import threading
@@ -14,7 +14,6 @@ class WindowLogic(WindowSignals):
         super().__init__(**kwargs)
         self.paths = paths.get('back')
         self.init_connection()
-        self.log_to_server()
 
     """
     Conection
@@ -36,15 +35,13 @@ class WindowLogic(WindowSignals):
 
     def listen_server(self) -> None:
         try:
-            len_in_bytes = self.t_socket.recv(4)
-            len_content = int.from_bytes(len_in_bytes, byteorder='big')
-            msg = Router.receive_bytes(len_content, self.t_socket)
-            self.read_cmd(msg)
+            while True:
+                len_in_bytes = self.t_socket.recv(4)
+                len_content = int.from_bytes(len_in_bytes, byteorder='big')
+                msg = Router.receive_bytes(len_content, self.t_socket)
+                self.read_cmd(msg)
         except ConnectionError: pass
 
-    """
-    Traffic
-    """
     # To send requests
     def starken(self, object) -> None:
         msg = Router.codify_bytes(object)
@@ -64,5 +61,5 @@ class WindowLogic(WindowSignals):
             user_info = json.load(file)
         self.starken(Requests.log_in(user_info))
 
-    def create_user(self) -> None:
-        pass
+    def create_user(self, user_info: dict) -> None:
+        self.starken(Requests.log_in(user_info))

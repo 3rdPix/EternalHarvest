@@ -1,0 +1,33 @@
+QLabel {
+    font-family: Tahoma;
+    font-size: 14px;
+    color: white;
+}
+QLineEdit {
+    background-color: #1d1b15;
+    font-family: Verdana;
+    font-size: 14px;
+    text-align: justify;
+    border-width: 0px;
+    border-radius: 0px;
+    color: #00E4FF;
+}
+QComboBox {
+    background-color: #312D24;
+	font-family: Roboto;
+	font-size: 15;
+	color: #B4B4B2;
+	padding-left: 13px;
+	vertical-align: CENTER;
+}
+QComboBox::selection {
+    background-color: #312D24;
+}
+QListView {
+    background-color: #312D24;
+	font-family: Roboto;
+	font-size: 15;
+	color: #B4B4B2;
+	padding-left: 13px;
+	vertical-align: CENTER;
+}

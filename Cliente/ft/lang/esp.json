@@ -12,6 +12,7 @@
         "advice": "Es altamente recomendado utilizar como nombre de usuario, el nombre de tu personaje dentro del juego",
         "user": "Usuario",
         "pass": "Contraseña",
-        "enter": "Ingresar"
+        "enter": "Ingresar",
+        "window_title": "Creación de usuario"
     }
 }

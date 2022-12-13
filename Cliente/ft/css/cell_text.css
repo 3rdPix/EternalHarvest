@@ -2,4 +2,5 @@ QLabel {
     color: #fcba03;
     font-size: 14px;
     font-family: 'Tahoma';
+    margin: 4px;
 }

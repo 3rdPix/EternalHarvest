@@ -8,8 +8,9 @@
         "preset_window": ["ft", "preset_window.json"],
         "arch": ["ft", "sprites", "arch"],
         "css": {
-            "cell": ["ft", "css", "cell_box.txt"],
-            "cell_text": ["ft", "css", "cell_text.txt"]
+            "cell": ["ft", "css", "cell_box.css"],
+            "cell_text": ["ft", "css", "cell_text.css"],
+            "log_in_window": ["ft", "css", "log_in_window.css"]
         },
         "background_im": {
             "cell": ["ft", "sprites", "backgrounds", "bg_items_shop.png"],
