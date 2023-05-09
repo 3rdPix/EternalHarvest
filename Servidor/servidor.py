@@ -1,5 +1,6 @@
 from socket import socket, AF_INET, SOCK_STREAM
 from router import Router
+from data_cmd import DataCmd
 from os.path import exists, join
 import threading
 import sqlite3
@@ -27,7 +28,8 @@ class Servidor:
     def init_db(self) -> None:
         if not exists(join(*['data', 'database.db'])): self.create_db()
         self.database: sqlite3.Connection = \
-            sqlite3.connect(join(*['data', 'database.db']))
+            sqlite3.connect(join(*['data', 'database.db']),
+            check_same_thread=False)
         self.cursor: sqlite3.Cursor = self.database.cursor()
 
     def create_db(self) -> None:
@@ -98,4 +100,7 @@ class Servidor:
     Tasks
     """
     def create_user(self, request: dict) -> None:
+        self.log(2, DataCmd.check_exists(request.get('username')))
+        in_db = self.cursor.execute(DataCmd.check_exists(request.get('username'))).fetchall()
+        print(in_db)
         self.log(2, f'Creación de usuario {request.get("username")}')
