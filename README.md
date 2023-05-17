@@ -1,3 +1,6 @@
+# Announcement
+Project discontinnued due to release of alternative software with same functionality.
+
 # EternalHarvest
 ## Background
 Eternal Harvest is a quest from the game Dofus 2 that consists in gathering an enourmous amount of monsters by capturing their souls, this can be done exclusively by defeating each one of the required monsters in combat. This process tends to be not only long in time, but difficult in execution due to certain in-game mechanics. <br>
